@@ -1,0 +1,47 @@
+version: '3'
+services:
+  shoppingdb:
+    build:
+      context: .
+      dockerfile: ./database/Dockerfile
+    image: rogerbv9017/shoppingdb:latest
+    container_name: ${DB_HOST}
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+    networks:
+      - shoppingNetwork
+    ports:
+      - "${DB_PORT}:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "shoppingdb", "-U", "admin"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+  shoppingBackend:
+    image: rogerbv9017/shoppingbackend:latest
+    env_file:
+      - ./.env
+    build:
+      context: .
+      dockerfile: ./shoppingBackend/Dockerfile
+    container_name: shoppingBackend
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "${BACKEND_PORT}:8000"
+    depends_on:
+      shoppingdb:
+        condition: service_healthy
+    command: fastapi dev main.py --host 0.0.0.0
+
+    volumes:
+      - ./shoppingBackend:/app/
+    networks:
+      - shoppingNetwork
+networks:
+  shoppingNetwork:
