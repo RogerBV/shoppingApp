@@ -24,7 +24,10 @@ phases:
       - echo "Begining Docker Compose"
       - docker-compose up -d
       - echo "Waiting for database to be ready"
-      - until docker exec ${DB_HOST} pg_isready -U ${DB_USER}; do echo "Waiting for DB..."; sleep 2; done
+      - |
+        until [ "$(docker inspect -f '{{.State.Health.Status}}' shoppingdbServer)" == "healthy" ]; do
+          echo "Waiting for DB health check..."; sleep 2;
+        done
   build:
     commands:
       - echo "Running Tests"
