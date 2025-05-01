@@ -1,6 +1,6 @@
 version: '3'
 services:
-  shoppingdb:
+  shoppingdbServer:
     build:
       context: .
       dockerfile: ./database/Dockerfile
