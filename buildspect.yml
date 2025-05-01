@@ -15,7 +15,7 @@ phases:
   pre_build:
     commands:
       - echo "Begining Docker Compose"
-      - docker-compose -f docker-compose.yml up -d
+      - docker-compose up -d
       - echo "Waiting for database to be ready"
       - until docker exec ${DB_HOST} pg_isready -U ${DB_USER}; do echo "Waiting for DB..."; sleep 2; done
   build:
