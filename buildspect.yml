@@ -12,11 +12,14 @@ phases:
     commands:
       - echo "Begining Docker Compose"
       - docker-compose -f docker-compose.yml up -d
-      - sleep 15 
+      - echo "Waiting for database to be ready"
+      - until pg_isready -h localhost -p 5432; do echo "Waiting for DB..."; sleep 2; done 
   build:
     commands:
       - echo "Running Tests"
-      - pytest
+      - pytest shoppingBackend/tests
+      - ls -R
+      - pwd
 
   post_build:
     commands:
