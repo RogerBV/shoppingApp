@@ -29,6 +29,13 @@ phases:
         until [ "$(docker inspect -f '{{.State.Health.Status}}' shoppingdbServer)" = "healthy" ]; do
           echo "Waiting for DB health check..."; sleep 2;
         done
+        - echo "Esperando a que PostgreSQL esté listo..."
+      - |
+        for i in {1..10}; do
+          docker exec shoppingBackend pg_isready -h shoppingdbServer -U $DB_USER && break
+          echo "Esperando 3s..."
+          sleep 3
+        done
   build:
     commands:
       - echo "Running Tests"
