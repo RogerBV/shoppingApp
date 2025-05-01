@@ -17,6 +17,10 @@ phases:
     
   pre_build:
     commands:
+      - echo "Exporting env variables"
+      - printenv | grep DB_   # Para ver que están realmente disponibles
+      - echo "Logging in to Docker Hub..."
+      - echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - echo "Begining Docker Compose"
       - docker-compose up -d
       - echo "Waiting for database to be ready"
