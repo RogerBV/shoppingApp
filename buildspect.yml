@@ -7,6 +7,9 @@ phases:
     commands:
       - echo "Installing dependencies"
       - pip install -r ./shoppingBackend/requirements.txt
+      - echo "Checking pytest installation"
+      - which pytest
+      - pytest --version
       - echo "Installing Docker Compose"
       - curl -L "https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
       - chmod +x /usr/local/bin/docker-compose
@@ -21,9 +24,11 @@ phases:
   build:
     commands:
       - echo "Running Tests"
-      - pytest shoppingBackend/tests
-      - ls -R
       - pwd
+      - ls -la
+      - ls -la shoppingBackend
+      - ls -la shoppingBackend/tests
+      - pytest shoppingBackend/tests -v
 
   post_build:
     commands:
