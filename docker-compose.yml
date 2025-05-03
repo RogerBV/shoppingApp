@@ -15,13 +15,15 @@ services:
     ports:
       - "${DB_PORT}:5432"
     healthcheck:
-      test: ["CMD", "pg_isready", "-q", "-d", "${DB_NAME}", "-U", "${DB_USER}"]
+      test: ["CMD", "pg_isready", "-q", "-d", "shoppingdb", "-U", "admin"]
       interval: 10s
       timeout: 10s
       retries: 5
       start_period: 10s
   shoppingBackend:
     image: rogerbv9017/shoppingbackend:latest
+    env_file:
+      - ./.env
     build:
       context: .
       dockerfile: ./shoppingBackend/Dockerfile
